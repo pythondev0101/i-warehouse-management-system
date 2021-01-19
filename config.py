@@ -28,6 +28,18 @@ class Config(object):
     DATA_PER_PAGE = 7
 
     # Add your configurations here
+    """ PDFKIT """
+    PDF_FOLDER = basedir + '/app/static/pdfs/'
+
+    """ FLASK-MAIL """
+    MAIL_SERVER = "smtp.gmail.com"
+    MAIL_PORT = 465
+    MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
+    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+    MAIL_USE_TLS = False
+    MAIL_USE_SSL = True
+
+    COLD_STORAGE_URL  = os.environ.get('COLD_STORAGE_URL')
 
 
 class DevelopmentConfig(Config):
