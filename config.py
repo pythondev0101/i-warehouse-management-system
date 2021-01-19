@@ -27,7 +27,8 @@ class Config(object):
     """ PAGINATION """
     DATA_PER_PAGE = 7
 
-    # Add your configurations here
+    # DEVELOPER-NOTE: -ADD YOUR CONFIGURATIONS HERE-
+
     """ PDFKIT """
     PDF_FOLDER = basedir + '/app/static/pdfs/'
 
@@ -40,6 +41,7 @@ class Config(object):
     MAIL_USE_SSL = True
 
     COLD_STORAGE_URL  = os.environ.get('COLD_STORAGE_URL')
+    #                 -END-
 
 
 class DevelopmentConfig(Config):

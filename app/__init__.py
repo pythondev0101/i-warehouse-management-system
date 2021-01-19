@@ -14,14 +14,21 @@ from flask_mail import Mail
 from flask_qrcode import QRcode
 from config import app_config
 
+# DEVELOPER-NOTE: -INCLUDE YOUR IMPORTS HERE-
 
-# INITIALIZE FLASK IMPORTS
+#                  -END-
+
 db = SQLAlchemy()
 migrate = Migrate()
 csrf = CSRFProtect()
 cors = CORS()
 login_manager = LoginManager()
 mail = Mail()
+
+# DEVELOPER-NOTE: -INITIATE YOUR IMPORTS HERE-
+
+#                   -END-
+
 
 MODULES = []
 
@@ -53,26 +60,30 @@ def create_app(config_name):
     mail.init_app(app)
     QRcode(app)
 
+    # DEVELOPER-NOTE: -INITIALIZE YOUR IMPORTS HERE-
+
+    #                    -END-
+
     login_manager.login_view = 'bp_auth.login'
     login_manager.login_message = "You must be logged in to access this page."
 
     with app.app_context():
 
-        # EDITABLE: IMPORT HERE THE SYSTEM MODULES
+        # DEVELOPER-NOTE: -IMPORT HERE THE SYSTEM MODULES-
         from app.core import bp_core
         from app.auth import bp_auth
         from app.admin import bp_admin
         from iwms import bp_iwms
         # --------------END--------------
 
-        # EDITABLE: REGISTER HERE THE MODULE BLUEPRINTS
+        # DEVELOPER-NOTE: -REGISTER HERE THE MODULE BLUEPRINTS-
         app.register_blueprint(bp_core, url_prefix='/')
         app.register_blueprint(bp_auth, url_prefix='/auth')
         app.register_blueprint(bp_admin, url_prefix='/admin')
         app.register_blueprint(bp_admin, url_prefix='/iwms')
         # --------------END--------------
 
-        # EDITABLE: INCLUDE HERE YOUR MODULE Admin models FOR ADMIN TEMPLATE"""
+        # DEVELOPER-NOTE: -INCLUDE HERE YOUR MODULE Admin models FOR ADMIN TEMPLATE-
         from app.admin.admin import AdminModule
         from app.auth.auth import AuthModule
         from iwms.iwms import IwmsModule
