@@ -9,14 +9,14 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
+from config import app_config
+# DEVELOPER-NOTE: -INCLUDE YOUR IMPORTS HERE-
 from flask_cors import CORS
 from flask_mail import Mail
 from flask_qrcode import QRcode
-from config import app_config
-
-# DEVELOPER-NOTE: -INCLUDE YOUR IMPORTS HERE-
-
 #                  -END-
+
+
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -80,7 +80,7 @@ def create_app(config_name):
         app.register_blueprint(bp_core, url_prefix='/')
         app.register_blueprint(bp_auth, url_prefix='/auth')
         app.register_blueprint(bp_admin, url_prefix='/admin')
-        app.register_blueprint(bp_admin, url_prefix='/iwms')
+        app.register_blueprint(bp_iwms, url_prefix='/iwms')
         # --------------END--------------
 
         # DEVELOPER-NOTE: -INCLUDE HERE YOUR MODULE Admin models FOR ADMIN TEMPLATE-
