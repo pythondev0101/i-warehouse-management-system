@@ -16,7 +16,8 @@ class Config(object):
     # DEVELOPER-NOTE: ADMIN PAGE CONFIGURATIONS HERE
     ADMIN = {
         'DATA_PER_PAGE': 25,
-        'URL': 'bp_iwms.dashboard',
+        'HOME_URL': 'bp_iwms.dashboard',
+        'DASHBOARD_URL': 'bp_iwms.dashboard',
     }
     #                 -END-
 
