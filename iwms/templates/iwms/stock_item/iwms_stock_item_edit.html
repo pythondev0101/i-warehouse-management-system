@@ -1,0 +1,359 @@
+{% extends "admin/admin_base.html" %}
+
+{% block content %}
+<div class="app-main__inner">
+    <div class="app-page-title">
+        <div class="page-title-wrapper">
+            <div class="page-title-heading">
+                <div class="page-title-icon">
+                    <img width="100%" height="100%"
+                    src="{{qrcode(form.barcode.data)}}">
+                </div>
+                <div>{{ form.number.data }}
+                    <div class="page-title-subheading">
+                        {% if form.status.data.name == 'active' %}
+                        <div class="mb-2 mr-2 badge badge-pill badge-success">ACTIVE</div>
+                        {% elif form.status.data.name == 'hold' %}
+                        <div class="mb-2 mr-2 badge badge-pill badge-warning">HOLD</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ul class="body-tabs body-tabs-layout tabs-animated body-tabs-animated nav">
+        <li class="nav-item">
+            <a role="tab" class="nav-link show active" id="tab-0" data-toggle="tab" href="#tab-content-0" aria-selected="true">
+                <span>General Information</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a role="tab" class="nav-link show" id="tab-1" data-toggle="tab" href="#tab-content-1" aria-selected="false">
+                <span>PLU Group</span>
+            </a>
+        </li>
+        <!-- <li class="nav-item">
+            <a role="tab" class="nav-link show" id="tab-2" data-toggle="tab" href="#tab-content-2" aria-selected="false">
+                <span>Other Information</span>
+            </a>
+        </li> -->
+    </ul>
+    <form action="{{ url_for('bp_iwms.edit_stock_item',oid=oid) }}" id="edit_form" class="needs-validation" method="POST" novalidate>
+    {{ form.csrf_token }}
+    <div class="tab-content">
+        <div class="tab-pane tabs-animation fade active show" id="tab-content-0" role="tabpanel">
+            <div class="main-card mb-3 card">
+                <div class="card-body">
+                        <div class="form-row">
+                            <div class="col-md-4">
+                                <div class="position-relative form-group">
+                                    <label for="type" class="">Type</label>
+                                    <select name="stock_item_type_id" id="stock_item_type_id" class="form-control">
+                                        <option value="">Choose...</option>
+                                        {% for type in data['types'] %}
+                                        <option value="{{ type.id }}" {% if form.stock_item_type_id.data == type.id %}selected{% endif %}>
+                                            {{ type.name }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                    <div class="valid-feedback">
+                                        Looks good!
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        Please provide a valid
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="position-relative form-group">
+                                    <label for="category_id" class="">Category</label>
+                                    <select name="category_id" id="category_id" class="form-control">
+                                        <option value="">Choose...</option>
+                                        {% for category in data['categories'] %}
+                                        <option value="{{ category.id }}" {% if form.category_id.data == category.id %}selected{% endif %}>
+                                            {{ category.description }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                    <div class="valid-feedback">
+                                        Looks good!
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        Please provide a valid
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="position-relative form-group">
+                                    <label for="brand" class="">Brand</label>
+                                    <input name="brand" type="text" class="form-control" value="{{form.brand.data}}">
+                                </div>
+                            </div>
+                        </div> 
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <div class="position-relative form-group">
+                                    <label for="name" class="">Name</label>
+                                    <input name="name" id="name" type="text" class="form-control input_required" value="{{form.name.data}}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="position-relative form-group">
+                                    <label for="description" class="">Description</label>
+                                    <input name="description" id="description" type="text" class="form-control" value="{{form.description.data}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-4">
+                                <div class="position-relative form-group">
+                                    <label for="packaging" class="">Packaging</label>
+                                    <input name="packaging" id="packaging" type="text" class="form-control" value="{{form.packaging.data}}">
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="position-relative form-group"><label for="suppliers" class="">Supplier(s)</label>
+                                    <select multiple="" name="suppliers" id="suppliers" class="form-control" required>
+                                        {% for supplier in data['suppliers'] %}
+                                    <option value="{{ supplier.id }}" {% if supplier.id in data['selected_suppliers'] %}selected{% endif %}>{{supplier.name}}</option>
+                                    {% endfor %}
+                                </select></div>
+                            </div>
+                        </div>
+                            
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane tabs-animation fade" id="tab-content-1" role="tabpanel">
+            <div class="main-card mb-3 card">
+                <div class="card-body">
+                    <div class="form-row">
+                        <div class="col-md-4">
+                            <div class="position-relative form-group">
+                                <label for="description_plu" class="">Description</label>
+                                <input name="description_plu" id="description_plu" type="text" class="form-control" 
+                                value="{{form.description_plu.data}}"
+                                readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="position-relative form-group">
+                                <label for="unit_id" class="">Unit</label>
+                                <select name="unit_id" id="unit_id" class="form-control input_required" required>
+                                    <option value="">Choose...</option>
+                                    {% for uom in data['units'] %}
+                                    <option value="{{ uom.id }}" {% if form.unit_id.data == uom.id %}selected{% endif %}>
+                                        {{ uom.code }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                                <div class="valid-feedback">
+                                    Looks good!
+                                </div>
+                                <div class="invalid-feedback">
+                                    Please provide a valid
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="position-relative form-group">
+                                <label for="default_cost" class="">Default Cost</label>
+                                <input type="number" class="form-control" id="default_cost" name="default_cost" 
+                                placeholder="Php" step="0.01" min="0" value="{{form.default_cost.data}}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-4">
+                            <div class="position-relative form-group">
+                                <label for="barcode" class="">Barcode</label>
+                                <input name="barcode" id="barcode" type="text" class="form-control" value="{% if not form.barcode.data == None %}{{form.barcode.data}}{% endif %}">
+                                <div id="barcode-valid-feedback" class="valid-feedback">
+                                    Looks good!
+                                </div>
+                                <div id="barcode-invalid-feedback" class="invalid-feedback">
+                                    Please provide a valid barcode
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="position-relative form-group">
+                                <label for="qty_plu" class="">Qty</label>
+                                <input name="qty_plu" id="qty_plu" type="text" class="form-control" value="{% if not form.qty_plu.data == None %}{{form.qty_plu.data}}{% endif %}">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="position-relative form-group">
+                                <label for="default_price" class="">Default Price</label>
+                                <input type="number" class="form-control" id="default_price" name="default_price" 
+                                placeholder="Php" step="0.01" min="0" value="{{form.default_price.data}}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-2">
+                            <div class="position-relative form-group">
+                                <label for="length" class="">Measurement</label>
+                                <input name="length" id="length" type="text" class="form-control" placeholder="Length" value="{{form.length.data}}">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="position-relative form-group">
+                                <label for="width" class=""><br></label>
+                                <input name="width" id="width" type="text" class="form-control" placeholder="Width" value="{{form.width.data}}">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="position-relative form-group">
+                                <label for="height" class=""><br></label>
+                                <input name="height" id="height" type="text" class="form-control" placeholder="Height" value="{{form.height.data}}">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="position-relative form-group">
+                                <label for="cbm" class="">CBM</label>
+                                <input name="cbm" id="cbm" type="text" class="form-control" value="{{form.cbm.data}}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="position-relative form-group">
+                                <label for="weight" class="">Weight(kg)</label>
+                                <input name="weight" id="weight" type="text" class="form-control" value="{{form.weight.data}}">
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            </div>
+
+            <div class="col-lg-14">
+            <div class="main-card mb-3 card">
+                <div class="table-responsive">
+                    <table id="tbl_uom_line" class="mb-0 table table-bordered">
+                        <thead>
+                        <tr>
+                            <th style="display:none;"></th>
+                            <th></th>
+                            <th class="text-center">DEFAULT UNIT</th>
+                            <th class="text-center">STATUS</th>
+                            <th class="text-center">DESCRIPTION</th>
+                            <th class="text-center">UNIT</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for uom in data['uom_lines'] %}
+                            <tr>
+                                <td style="display:none;"><input name="uoms[]" type="hidden" value="{{uom.uom_id}}"></td>
+                                <td style='width:50px'><input class="chkbox" type="checkbox"></td>
+                                {% if form.unit_id.data == uom.uom_id %}
+                                <td style='width:150px' class='text-center'><div class='badge badge-primary'>YES</div></td>
+                                {% else %}
+                                <td style='width:150px' class='text-center'><div class='badge badge-secondary'>NO</div></td>
+                                {% endif %}
+                                {% if uom.uom.active %}
+                                <td style='width:150px' class='text-center'><div class='badge badge-success'>ACTIVE</div></td>
+                                {% else %}
+                                <td style='width:150px' class='text-center'><div class='badge badge-danger'>INACTIVE</div></td>
+                                {% endif %}
+                                <td class='text-center'>{{uom.uom.description}}</td>
+                                <td class='text-center'>{{uom.uom.code}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="d-block text-center card-footer">
+                    <button id="btn_delete_line" type="button" class="mr-2 btn-icon btn-icon-only btn btn-outline-danger"><i class="pe-7s-trash btn-icon-wrapper"> </i></button>
+                    <button type="button" class="btn-wide btn btn-success" data-toggle="modal" data-target="#add_uom_modal" title="Add uom line" data-placement="bottom">Add</button>
+                </div>
+            </div>
+            </div>
+
+        </div>
+        <div class="tab-pane tabs-animation fade" id="tab-content-2" role="tabpanel">
+            <div class="main-card mb-3 card">
+                <div class="card-body">
+                    <form class="">
+                        <div class="position-relative row form-group">
+                            <label for="qty_per_pallet" class="col-sm-2 col-form-label">Qty per Pallet</label>
+                            <div class="col-sm-3">
+                                <input name="qty_per_pallet" id="qty_per_pallet" type="number" class="form-control" value="{{form.qty_per_pallet.data}}">
+                            </div>
+                        </div>
+                        <div class="position-relative row form-group">
+                            <label for="shelf_life" class="col-sm-2 col-form-label">Shelf Life(in months)</label>
+                            <div class="col-sm-3">
+                                <input name="shelf_life" id="shelf_life" type="number" class="form-control" value="{{form.shelf_life.data}}">
+                            </div>
+                        </div>
+                        <div class="position-relative row form-group">
+                            <label for="qa_lead_time" class="col-sm-2 col-form-label">QA Lead Time(in hours)</label>
+                            <div class="col-sm-3">
+                                <input name="qa_lead_time" id="qa_lead_time" type="number" class="form-control" value="{{form.qa_lead_time.data}}">
+                            </div>
+                        </div>                        
+                    </form>
+                </div>
+            </div>
+        </div>
+        <script>
+            // Example starter JavaScript for disabling form submissions if there are invalid fields
+            (function() {
+            'use strict';
+            window.addEventListener('load', function() {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.getElementsByClassName('needs-validation');
+            // Loop over them and prevent submission
+            var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+            if (form.checkValidity() === false) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+            }, false);
+            });
+            }, false);
+            })();
+        </script>
+    </div>
+    </form>
+</div>
+{% endblock %}
+
+
+{% block inner_footer %}
+
+<div class="app-footer-left">
+    <button form="edit_form" type="submit" class="btn btn-primary" style="margin-right: 10px;">Save</button>
+    <button type="button" class="btn btn-secondary" onclick="history.back(-1)">Cancel</button>
+</div>
+
+{% endblock %}
+
+
+{% block toast %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div id="toast-container" class="toast-top-center">
+    {% for category, message in messages %}
+        {% if category == 'success' %}
+        <div class="toast toast-success" aria-live="polite">
+            <div class="toast-progress" style="width: 0%;"></div>
+            <button type="button" class="toast-close-button" role="button" onclick="close_toast()">×</button>
+            <div class="toast-title">Success!</div>
+            <div class="toast-message">{{ message }}</div>
+        </div>
+        {% elif category == 'error' %}
+        <div class="toast toast-error" aria-live="polite">
+            <div class="toast-progress" style="width: 0%;"></div>
+            <button type="button" class="toast-close-button" role="button" onclick="close_toast()">×</button>
+            <div class="toast-title">Error!</div>
+            <div class="toast-message">{{ message }}</div>
+        </div>
+        {% endif %}
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+{% endblock %}

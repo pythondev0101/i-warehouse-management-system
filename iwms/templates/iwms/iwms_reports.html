@@ -1,0 +1,501 @@
+{% extends 'admin/admin_dashboard.html' %}
+
+{% block content %}
+<div class="app-main__inner">
+    <div class="app-page-title">
+        <div class="page-title-wrapper">
+            <div class="page-title-heading">
+                <div class="page-title-icon">
+                    <i class="pe-7s-graph2 icon-gradient bg-mean-fruit">
+                    </i>
+                </div>
+                <div>Reports
+                    <div class="page-title-subheading">
+                        Inventory, Sales and Purchases Reports
+                    </div>
+                </div>
+            </div>
+            <div class="page-title-actions">
+                <div class="d-inline-block dropdown">
+                    <button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                            class="btn-shadow dropdown-toggle btn btn-info">
+                                    <span class="btn-icon-wrapper pr-2 opacity-7">
+                                        <i class="fa fa-list-alt fa-w-20"></i>
+                                    </span>
+                        Actions
+                    </button>
+                    <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-right">
+                        <ul class="nav flex-column">
+                            <li id="nav_action_btns" class="nav-item">
+                                <button type="button" class="dropdown-item" data-toggle="modal" data-target="#changepasswordmodal">
+                                    Purchase Order Report (excel)
+                                </button>
+                                
+                            </li>
+                            <li class="nav-item">
+                                <button type="button" class="dropdown-item" data-toggle="modal" data-target="#soreportmodal">
+                                    Sales Order Report (excel)
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="mb-3 card">
+                <div class="card-header-tab card-header-tab-animation card-header">
+                    <div class="card-header-title">
+                        <i class="header-icon lnr-apartment icon-gradient bg-love-kiss"> </i>
+                        Sales Report
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="tabs-eg-77">
+                            <div class="card mb-3 widget-chart widget-chart2 text-left w-100">
+                                <div class="widget-chat-wrapper-outer">
+                                    <div class="widget-chart-wrapper widget-chart-wrapper-lg opacity-10 m-0"><div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
+                                        <canvas id="sales_report_chart" width="864" height="432" class="chartjs-render-monitor" style="display: block; width: 864px; height: 432px;"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <h6 class="text-muted text-uppercase font-size-md opacity-5 font-weight-normal">Top Clients</h6>
+                            <div class="scroll-area-sm">
+                                <div class="scrollbar-container ps ps--active-y">
+                                    <ul class="rm-list-borders rm-list-borders-scroll list-group list-group-flush">
+                                        {% for client in rd['top_clients'] %}
+                                        <li class="list-group-item">
+                                            <div class="widget-content p-0">
+                                                <div class="widget-content-wrapper">
+                                                 
+                                                    <div class="widget-content-left">
+                                                        <div class="widget-heading">{{client[1]}}</div>
+                                                        <div class="widget-subheading">{{client[0]}}</div>
+                                                    </div>
+                                                    <div class="widget-content-right">
+                                                        <div class="font-size-xlg text-muted">
+                                                            <small class="opacity-5 pr-1">Sales Order:</small>
+                                                            <span>{{client[2]}}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                <div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__rail-y" style="top: 0px; height: 200px; right: 0px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 139px;"></div></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="mb-3 card">
+                <div class="card-header-tab card-header-tab-animation card-header">
+                    <div class="card-header-title">
+                        <i class="header-icon lnr-apartment icon-gradient bg-love-kiss"> </i>
+                        Sales Order Report
+                    </div>
+                    <ul class="nav">
+                        <li class="nav-item"><a data-toggle="tab" href="#tabs-eg-77" class="nav-link show active">Top</a></li>
+                        <li class="nav-item"><a data-toggle="tab" href="#tabs-eg-78" class="nav-link">Low</a></li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="tabs-eg-77">
+                            <div class="main-card mb-3 card">
+                                <div class="card-body">
+                                    <table id="tbl_so_1" class="mb-0 table">
+                                        <thead>
+                                        <tr>
+                                            <th>SO NO.</th>
+                                            <th>DATE</th>
+                                            <th>CUSTOMER</th>
+                                            <th>DESCRIPTION</th>
+                                            <th>QTY</th>
+                                            <th>PRICE</th>
+                                            <th>STATUS</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for so in rd['sos'] %}
+                                            <tr>
+                                                <td>{{so.number}}</td>
+                                                <td>{{so.ordered_date.strftime('%Y-%m-%d')}}</td>
+                                                <td>{{so.client.name}}</td>
+                                                <td></td><td></td><td></td>
+                                                <td>{{so.status}}</td>
+                                            </tr>
+                                                {% for product in so.product_line %}
+                                                <tr>
+                                                    <td></td><td></td><td></td>
+                                                    <td>{{product.inventory_item.stock_item.name}}</td>
+                                                    <td>{{product.issued_qty}}</td>
+                                                    <td>{{product.unit_price}}</td>
+                                                    <td></td>
+                                                </tr>
+                                                {% endfor %}
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <h6 class="text-muted text-uppercase font-size-md opacity-5 font-weight-normal">Top Items</h6>
+                            <div class="scroll-area-sm">
+                                <div class="scrollbar-container ps ps--active-y">
+                                    <ul class="rm-list-borders rm-list-borders-scroll list-group list-group-flush">
+                                        {% for item in rd['top_so_items'] %}
+                                        <li class="list-group-item">
+                                            <div class="widget-content p-0">
+                                                <div class="widget-content-wrapper">
+                                                    <div class="widget-content-left">
+                                                        <div class="widget-heading">{{item[1]}}</div>
+                                                        <div class="widget-subheading">{{item[0]}}</div>
+                                                    </div>
+                                                    <div class="widget-content-right">
+                                                        <div class="font-size-xlg text-muted">
+                                                            <small class="opacity-5 pr-1">Sales Order:</small>
+                                                            <span>{{item[2]}}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                <div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__rail-y" style="top: 0px; height: 200px; right: 0px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 139px;"></div></div></div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade show" id="tabs-eg-78">
+                            <div class="main-card mb-3 card">
+                                <div class="card-body">
+                                    <table id="tbl_so_2" class="mb-0 table">
+                                        <thead>
+                                        <tr>
+                                            <th>SO NO.</th>
+                                            <th>DATE</th>
+                                            <th>CUSTOMER</th>
+                                            <th>DESCRIPTION</th>
+                                            <th>QTY</th>
+                                            <th>PRICE</th>
+                                            <th>STATUS</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for so in rd['sos'] %}
+                                            <tr>
+                                                <td>{{so.number}}</td>
+                                                <td>{{so.ordered_date.strftime('%Y-%m-%d')}}</td>
+                                                <td>{{so.client.name}}</td>
+                                                <td></td><td></td><td></td>
+                                                <td>{{so.status}}</td>
+                                            </tr>
+                                                {% for product in so.product_line %}
+                                                <tr>
+                                                    <td></td><td></td><td></td>
+                                                    <td>{{product.inventory_item.stock_item.name}}</td>
+                                                    <td>{{product.issued_qty}}</td>
+                                                    <td>{{product.unit_price}}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <h6 class="text-muted text-uppercase font-size-md opacity-5 font-weight-normal">Low Items</h6>
+                            <div class="scroll-area-sm">
+                                <div class="scrollbar-container ps ps--active-y">
+                                    <ul class="rm-list-borders rm-list-borders-scroll list-group list-group-flush">
+                                        {% for item in rd['low_so_items'] %}
+                                        <li class="list-group-item">
+                                            <div class="widget-content p-0">
+                                                <div class="widget-content-wrapper">
+                                                    <div class="widget-content-left">
+                                                        <div class="widget-heading">{{item[1]}}</div>
+                                                        <div class="widget-subheading">{{item[0]}}</div>
+                                                    </div>
+                                                    <div class="widget-content-right">
+                                                        <div class="font-size-xlg text-muted">
+                                                            <small class="opacity-5 pr-1">Sales Order:</small>
+                                                            <span>{{item[2]}}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                <div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__rail-y" style="top: 0px; height: 200px; right: 0px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 139px;"></div></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="mb-3 card">
+                <div class="card-header-tab card-header-tab-animation card-header">
+                    <div class="card-header-title">
+                        <i class="header-icon lnr-apartment icon-gradient bg-love-kiss"> </i>
+                        Purchasing Report
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="tabs-eg-77">
+                            <div class="main-card mb-3 card">
+                                <div class="card-body">
+                                    <table id="tbl_po" class="mb-0 table">
+                                        <thead>
+                                        <tr>
+                                            <th>PO NO.</th>
+                                            <th>DATE</th>
+                                            <th>COMPANY POs</th>
+                                            <th>WHO ORDER</th>
+                                            <th>DESCRIPTION</th>
+                                            <th>QTY</th>
+                                            <th>PRICE</th>
+                                            <th>TYPES</th>
+                                            <th>STATUS</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for po in rd['pos'] %}
+                                            <tr>
+                                                <td>{{po.po_number}}</td>
+                                                <td>{{po.ordered_date.strftime('%Y-%m-%d')}}</td>
+                                                <td>{{po.supplier.name}}</td>
+                                                <td>{{po.created_by}}</td>
+                                                <td></td><td></td><td></td><td></td>
+                                                <td>{{po.status}}</td>
+                                            </tr>
+                                                {% for product in po.product_line %}
+                                                <tr>
+                                                    <td></td><td></td><td></td><td></td>
+                                                    <td>{{product.stock_item.name}}</td>
+                                                    <td>{{product.qty}}</td>
+                                                    <td>{{product.stock_item.default_cost}}</td>
+                                                    <td>{{product.stock_item.stock_item_type.name}}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <h6 class="text-muted text-uppercase font-size-md opacity-5 font-weight-normal">Top Items</h6>
+                            <div class="scroll-area-sm">
+                                <div class="scrollbar-container ps ps--active-y">
+                                    <ul class="rm-list-borders rm-list-borders-scroll list-group list-group-flush">
+                                        {% for item in rd['top_items'] %}
+                                        <li class="list-group-item">
+                                            <div class="widget-content p-0">
+                                                <div class="widget-content-wrapper">
+                                                    <div class="widget-content-left">
+                                                        <div class="widget-heading">{{item[1]}}</div>
+                                                        <div class="widget-subheading">{{item[0]}}</div>
+                                                    </div>
+                                                    <div class="widget-content-right">
+                                                        <div class="font-size-xlg text-muted">
+                                                            <small class="opacity-5 pr-1">Purchase Order:</small>
+                                                            <span>{{item[2]}}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                <div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__rail-y" style="top: 0px; height: 200px; right: 0px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 139px;"></div></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="mb-3 card">
+                <div class="card-header-tab card-header-tab-animation card-header">
+                    <div class="card-header-title">
+                        <i class="header-icon lnr-apartment icon-gradient bg-love-kiss"> </i>
+                        STOCK RECEIPT Report
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="tabs-eg-77">
+                            <div class="main-card mb-3 card">
+                                <div class="card-body">
+                                    <table class="mb-0 table">
+                                        <thead>
+                                        <tr>
+                                            <th>SR NO.</th>
+                                            <th>DATE</th>
+                                            <th>DR NUMBER</th>
+                                            <th>RECEIVED</th>
+                                            <th>PLATE NUMBER</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for sr in rd['srs'] %}
+                                            <tr>
+                                                <td>{{sr.sr_number}}</td>
+                                                <td>{{sr.created_at.strftime('%Y-%m-%d')}}</td>
+                                                <td>{{sr.reference}}</td>
+                                                <td>{{sr.date_received.strftime('%Y-%m-%d')}}</td>
+                                                <td>{{sr.si_number}}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="mb-3 card">
+                <div class="card-header-tab card-header-tab-animation card-header">
+                    <div class="card-header-title">
+                        <i class="header-icon lnr-apartment icon-gradient bg-love-kiss"> </i>
+                        ITEM EXPIRATION REPORT
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="tabs-eg-77">
+                            <div class="main-card mb-3 card">
+                                <div class="card-body">
+                                    <table class="mb-0 table">
+                                        <thead>
+                                        <tr>
+                                            <th>ITEM NO.</th>
+                                            <th>ITEM NAME</th>
+                                            <th>BIN LOCATION</th>
+                                            <th>EXPIRATION DATE</th>
+                                            <th>STATUS</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for item in rd['item_expiration'] %}
+                                            <tr>
+                                                <td>{{item[0].inventory_item.stock_item.number}}</td>
+                                                <td>{{item[0].inventory_item.stock_item.name}}</td>
+                                                <td>{{item[0].bin_location.code}}</td>
+                                                <td>{{item[0].expiry_date.strftime('%Y-%m-%d')}}</td>
+                                                <td>{% if item[1] == 'EXPIRED' %}
+                                                    <div class="mb-2 mr-2 badge badge-pill badge-danger">EXPIRED</div>
+                                                    {% elif item[1] == 'GOOD' %}
+                                                    <div class="mb-2 mr-2 badge badge-pill badge-success">GOOD</div>
+                                                    {% elif item[1] == 'NEARLY EXPIRED' %}
+                                                    <div class="mb-2 mr-2 badge badge-pill badge-warning">NEARLY EXPIRED</div>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block modals %}
+{% include 'iwms/iwms_report_so_modal.html' %}
+
+{% include 'iwms/iwms_report_modal.html' %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function(){
+
+        var color = Chart.helpers.color;
+        var colors = ['rgba(255, 99, 132, 0.5)',"rgb(191, 63, 63,0.5)","rgb(63, 127, 191,0.5)",
+        "rgb(189, 81, 135,0.5)","rgb(81, 189, 135,0.5)","rgb(81, 189, 189,0.5)","rgb(189, 135, 81,0.5)",
+        "rgb(146, 185, 39,0.5)","rgb(78, 39, 185,0.5)","rgb(185, 39, 146,0.5)","rgb(185, 151, 39,0.5)","rgb(33, 205, 3,0.5)",
+        'rgb(183, 31, 53,0.5)',"rgb(13, 206, 80,0.5)","rgb(85, 150, 74,0.5)","rgb(150, 74, 123,0.5)"
+        ];
+        var dataset = [];
+        var values = {{ rd['sales_clients'] | tojson }};
+        var ctr = 0;
+        for (ctr; ctr < values.length; ctr++){
+            dataset[ctr] = {
+				label: values[ctr].name,
+				backgroundColor: colors[ctr],
+                data: [values[ctr].sales]
+			}
+        }
+		var barChartData = {
+			datasets: dataset
+
+		};
+
+        var ctx = document.getElementById('sales_report_chart').getContext('2d');
+        window.myBar = new Chart(ctx, {
+            type: 'bar',
+            data: barChartData,
+            options: {
+                responsive: true,
+                legend: {
+                    position: 'top',
+                },
+            }
+        });
+
+    });
+</script>
+{% endblock %}
+
+{% block toast %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div id="toast-container" class="toast-top-center">
+    {% for category, message in messages %}
+        {% if category == 'success' %}
+        <div class="toast toast-success" aria-live="polite">
+            <div class="toast-progress" style="width: 0%;"></div>
+            <button type="button" class="toast-close-button" role="button" onclick="close_toast()">×</button>
+            <div class="toast-title">Success!</div>
+            <div class="toast-message">{{ message }}</div>
+        </div>
+        {% elif category == 'error' %}
+        <div class="toast toast-error" aria-live="polite">
+            <div class="toast-progress" style="width: 0%;"></div>
+            <button type="button" class="toast-close-button" role="button" onclick="close_toast()">×</button>
+            <div class="toast-title">Error!</div>
+            <div class="toast-message">{{ message }}</div>
+        </div>
+        {% endif %}
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+{% endblock %}

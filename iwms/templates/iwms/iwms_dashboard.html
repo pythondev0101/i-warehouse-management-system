@@ -1,0 +1,419 @@
+{% extends 'admin/admin_dashboard.html' %}
+
+{% block content %}
+<div class="app-main__inner">
+    <div class="app-page-title">
+        <div class="page-title-wrapper">
+            <div class="page-title-heading">
+                <div class="page-title-icon">
+                    <i class="pe-7s-graph2 icon-gradient bg-mean-fruit">
+                    </i>
+                </div>
+                <div>Dashboard
+                    <div class="page-title-subheading">
+                        Inventory, Sales and Purchases Activity
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h5 class="card-title">Activity</h5>
+    <div class="row">
+        <div class="col-md-6 col-xl-4">
+            <div class="card mb-3 widget-content bg-midnight-bloom">
+                <div class="widget-content-wrapper text-white">
+                    <div class="widget-content-left">
+                        <div class="widget-heading">Purchase Order</div>
+                    </div>
+                    <div class="widget-content-right">
+                        <div class="widget-numbers text-white"><span>{{options['data']['to_be_purchased']}}</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-4">
+            <div class="card mb-3 widget-content bg-arielle-smile">
+                <div class="widget-content-wrapper text-white">
+                    <div class="widget-content-left">
+                        <div class="widget-heading">Stock Receipt</div>
+                    </div>
+                    <div class="widget-content-right">
+                        <div class="widget-numbers text-white"><span>{{options['data']['to_be_receipted']}}</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-4">
+            <div class="card mb-3 widget-content bg-grow-early">
+                <div class="widget-content-wrapper text-white">
+                    <div class="widget-content-left">
+                        <div class="widget-heading">Putaway</div>
+                    </div>
+                    <div class="widget-content-right">
+                        <div class="widget-numbers text-white"><span>{{options['data']['to_be_stored']}}</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h5 class="card-title">Inventory Items Summary</h5>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="main-card mb-3 card">
+                <div class="card-body">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <div class="widget-content p-0">
+                                <div class="widget-content-outer">
+                                    <div class="widget-content-wrapper">
+                                        <div class="widget-content-left">
+                                            <div class="widget-heading">Quantity</div>
+                                            <div class="widget-subheading">On Hand</div>
+                                        </div>
+                                        <div class="widget-content-right">
+                                            <div class="widget-numbers text-success">{{options['data']['qty_on_hand']}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="widget-content p-0">
+                                <div class="widget-content-outer">
+                                    <div class="widget-content-wrapper">
+                                        <div class="widget-content-left">
+                                            <div class="widget-heading">Quantity</div>
+                                            <div class="widget-subheading">To be Received</div>
+                                        </div>
+                                        <div class="widget-content-right">
+                                            <div class="widget-numbers text-primary">{{options['data']['qty_to_be_received']}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="widget-content p-0">
+                                <div class="widget-content-outer">
+                                    <div class="widget-content-wrapper">
+                                        <div class="widget-content-left">
+                                            <div class="widget-heading">All Items</div>
+                                            <div class="widget-subheading">(Inventory Items)</div>
+                                        </div>
+                                        <div class="widget-content-right">
+                                            <div class="widget-numbers text-danger">{{options['data']['all_items']}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="main-card mb-3 card">
+                <div class="card-body"><div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
+                <canvas id="my-chart-area" width="364" height="182" class="chartjs-render-monitor" style="display: block; width: 364px; height: 182px;"></canvas>
+            </div>
+            </div>
+        </div>
+
+    </div>
+    <h5 class="card-title">Inventory Summary</h5>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="main-card mb-3 card">
+                <div class="card-body"><div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
+                    <h5 class="card-title">Purchase Order</h5>
+                    <canvas id="po-chart-area" width="364" height="182" class="chartjs-render-monitor" style="display: block; width: 364px; height: 182px;"></canvas>
+                </div>
+            </div>
+            <div class="main-card mb-3 card">
+                <div class="card-body"><div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
+                    <h5 class="card-title">Putaway</h5>
+                    <canvas id="pwy-chart" width="364" height="182" class="chartjs-render-monitor" style="display: block; width: 364px; height: 182px;"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="main-card mb-3 card">
+                <div class="card-body"><div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
+                    <h5 class="card-title">Stock Receipt</h5>
+                    <canvas id="sr-chart" width="364" height="182" class="chartjs-render-monitor" style="display: block; width: 364px; height: 182px;"></canvas>
+                </div>                                                                                          
+            </div>
+            <div class="main-card mb-3 card">
+                <div class="card-body"><div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
+                    <h5 class="card-title">Picking</h5>
+                    <canvas id="pck-chart" width="364" height="182" class="chartjs-render-monitor" style="display: block; width: 364px; height: 182px;"></canvas>
+                </div>
+            </div>
+        </div>                                                                                                          
+    </div>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+    <h5 class="card-title">Sales Order                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  </h5>
+    <div class="main-card mb-3 card">
+        <div class="no-gutters row">
+            <div class="col-md-4">
+                <div class="widget-content">
+                    <div class="widget-content-wrapper">
+                        <div class="widget-content-right ml-0 mr-3">
+                            <div class="widget-numbers text-success">{{options['data']['total_orders']}}</div>
+                        </div>
+                        <div class="widget-content-left">
+                            <div class="widget-heading">Total Orders</div>
+                            <div class="widget-subheading">All status</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="widget-content">
+                    <div class="widget-content-wrapper">
+                        <div class="widget-content-right ml-0 mr-3">
+                            <div class="widget-numbers text-warning">{{options['data']['items_to_be_confirmed']}}</div>
+                        </div>
+                        <div class="widget-content-left">
+                            <div class="widget-heading">Items</div>
+                            <div class="widget-subheading">To be confirmed</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="widget-content">
+                    <div class="widget-content-wrapper">
+                        <div class="widget-content-right ml-0 mr-3">
+                            <div class="widget-numbers text-danger">{{options['data']['items_confirmed']}}</div>
+                        </div>
+                        <div class="widget-content-left">
+                            <div class="widget-heading">Items</div>
+                            <div class="widget-subheading">Confirmed</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function(){
+        var chartColors = window.chartColors;
+        var color = Chart.helpers.color;
+        var my_chart_area = $("#my-chart-area");
+        
+        var on_hand = parseInt("{{options['data']['qty_on_hand']}}");
+        var qty_to_be_received = parseInt("{{options['data']['qty_to_be_received']}}");
+        
+        var myChart = new Chart(my_chart_area, {
+            type: 'bar',
+            data: {
+                datasets: [{
+                    label: '# To be Received',
+                    data: [qty_to_be_received],
+                    backgroundColor: [
+                        'rgba(255, 159, 64, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 159, 64, 1)',
+                    ],
+                    borderWidth: 1
+                },{
+                    label: '# On Hand',
+                    data: [on_hand],
+                    backgroundColor: [
+                        'rgba(153, 102, 255, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(153, 102, 255, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+        });
+
+        // PURCHASE ORDER
+
+        var po_chart_area = $("#po-chart-area");
+        var po_logged = "{{options['data']['po_data']['logged']}}";
+        var po_pending = "{{options['data']['po_data']['pending']}}";
+        var po_released = "{{options['data']['po_data']['released']}}";
+        var po_completed = "{{options['data']['po_data']['completed']}}";
+
+        var po_config = {
+			type: 'doughnut',
+			data: {
+				datasets: [{
+					data: [
+						po_logged,po_pending,po_released,po_completed
+					],
+                    backgroundColor: [
+                        window.chartColors.blue,
+						window.chartColors.red,
+						window.chartColors.yellow,
+						window.chartColors.green,
+					],
+				}],
+				labels: [
+					'LOGGED',
+					'PENDING',
+					'RELEASED',
+					'COMPLETED',
+				]
+			},
+			options: {
+				responsive: true,
+				legend: {
+					position: 'top',
+				},
+				animation: {
+					animateScale: true,
+					animateRotate: true
+				}
+			}
+        };
+        var poChart = new Chart(po_chart_area, po_config);
+
+        // STOCK RECEIPT
+
+        var sr_chart_area = $("#sr-chart");
+
+        var sr_completed_qty = parseInt("{{options['data']['sr_data']['completed']}}");
+        var sr_remaining_qty = parseInt("{{options['data']['sr_data']['remaining']}}");
+        var sr_incomplete_qty = parseInt("{{options['data']['sr_data']['incomplete']}}");
+
+		var sr_config = {
+			data: {
+				datasets: [{
+					data: [
+						sr_completed_qty,
+						sr_remaining_qty,
+						sr_incomplete_qty,
+					],
+                    backgroundColor: [
+                        color(chartColors.green).alpha(0.5).rgbString(),
+						color(chartColors.yellow).alpha(0.5).rgbString(),
+						color(chartColors.red).alpha(0.5).rgbString(),
+					],
+					label: 'My dataset' // for legend
+				}],
+				labels: [
+					'Completed Item Qty',
+					'Remaining Item Qty',
+					'Incomplete Item Qty',
+				]
+			},
+			options: {
+				responsive: true,
+				legend: {
+					position: 'right',
+                },
+				scale: {
+					ticks: {
+						beginAtZero: true
+					},
+					reverse: false
+				},
+				animation: {
+					animateRotate: false,
+					animateScale: true
+				}
+			}
+		};
+
+        var srChart = new Chart.PolarArea(sr_chart_area, sr_config);
+        
+        // PUTAWAY
+
+        var pwy_chart_area = $("#pwy-chart");
+        var pwy_to_be_stored_qty = "{{options['data']['pwy_data']['to_be_stored_qty']}}";
+        var pwy_stored_qty = "{{options['data']['pwy_data']['stored']}}"
+		var pwy_config = {
+			data: {
+				datasets: [{
+					data: [
+						pwy_to_be_stored_qty,
+						pwy_stored_qty,
+					],
+                    backgroundColor: [
+                        color(chartColors.red).alpha(0.5).rgbString(),
+                        color(chartColors.green).alpha(0.5).rgbString(),
+					],
+					label: 'My dataset' // for legend
+				}],
+				labels: [
+					'To be Stored Qty',
+					'Stored Qty',
+				]
+			},
+			options: {
+				responsive: true,
+				legend: {
+					position: 'right',
+                },
+				scale: {
+					ticks: {
+						beginAtZero: true
+					},
+					reverse: false
+				},
+				animation: {
+					animateRotate: false,
+					animateScale: true
+				}
+			}
+		};
+
+        var pwyChart = new Chart.PolarArea(pwy_chart_area, pwy_config);
+        
+
+        // PICKING
+
+        var pck_chart_area = $("#pck-chart");
+        var to_be_pick_qty = "{{options['data']['pck_data']['to_be_pick_qty']}}";
+        var picked_qty = "{{options['data']['pck_data']['picked_qty']}}"
+
+        var pck_config = {
+			data: {
+				datasets: [{
+					data: [
+                    to_be_pick_qty,
+                    picked_qty,
+					],
+                    backgroundColor: [
+                        color(chartColors.red).alpha(0.5).rgbString(),
+                        color(chartColors.green).alpha(0.5).rgbString(),
+					],
+					label: 'My dataset' // for legend
+				}],
+				labels: [
+					'To be Pick Qty',
+					'Picked Qty',
+				]
+			},
+			options: {
+				responsive: true,
+				legend: {
+					position: 'right',
+                },
+				scale: {
+					ticks: {
+						beginAtZero: true
+					},
+					reverse: false
+				},
+				animation: {
+					animateRotate: false,
+					animateScale: true
+				}
+			}
+		};
+
+        var pckChart = new Chart.PolarArea(pck_chart_area, pck_config);
+
+    });
+</script>
+{% endblock %}
