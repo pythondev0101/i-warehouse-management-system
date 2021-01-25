@@ -18,6 +18,8 @@ class Config(object):
         'DATA_PER_PAGE': 25,
         'HOME_URL': 'bp_iwms.dashboard',
         'DASHBOARD_URL': 'bp_iwms.dashboard',
+        'FIRST_SIDEBAR_HEADER': 'ADMINISTRATION',
+        'SECOND_SIDEBAR_HEADER': 'SYSTEM'
     }
     #                 -END-
 

@@ -177,65 +177,6 @@ def iwms_user_create():
     CONTEXT['mm-active'] = 'Users'
     return user_create(url='bp_iwms.users')
 
-@bp_iwms.route('/groups')
-@login_required
-def groups():
-    fields = [Group.id,Group.name,Group.created_by,Group.created_at,Group.updated_by,Group.updated_at]
-    CONTEXT['mm-active'] = 'Groups'
-    return admin_table(Group,fields=fields,create_url='bp_iwms.group_create',edit_url='bp_iwms.group_edit' , \
-        form=GroupForm(),template="iwms/iwms_index.html",kwargs={'active':'system'})
-
-@bp_iwms.route('/group_create',methods=['POST'])
-@login_required
-def group_create():
-    if _check_create('Groups'):
-        form = GroupForm()
-        if request.method == "POST":
-            if form.validate_on_submit():
-                try:
-                    group = Group()
-                    group.name = form.name.data
-                    group.created_by = "{} {}".format(current_user.fname,current_user.lname)
-                    db.session.add(group)
-                    db.session.commit()
-                    flash('New group added successfully!','success')
-                    _log_create('New group added',"GroupID={}".format(group.id))
-                    return redirect(url_for('bp_iwms.groups'))
-                except Exception as e:
-                    flash(str(e),'error')
-                    return redirect(url_for('bp_iwms.groups'))
-            else:
-                for key, value in form.errors.items():
-                    flash(str(key) + str(value), 'error')
-                return redirect(url_for('bp_iwms.groups'))
-    else:
-        return render_template("auth/authorization_error.html")
-
-@bp_iwms.route('/group_edit/<int:oid>',methods=['GET','POST'])
-@login_required
-def group_edit(oid):
-    group = Group.query.get_or_404(oid)
-    form = GroupEditForm(obj=group)
-    if request.method == "GET":
-        CONTEXT['mm-active'] = 'Groups'
-        return admin_edit(form,'bp_iwms.group_edit',oid,model=Group,template='iwms/iwms_edit.html',kwargs={'active':'system'})
-    elif request.method == "POST":
-        if form.validate_on_submit():
-            try:
-                group.name = form.name.data
-                group.updated_at = datetime.now()
-                group.updated_by = "{} {}".format(current_user.fname,current_user.lname)
-                db.session.commit()
-                flash('Group update Successfully!','success')
-                _log_create("Group update","GroupID={}".format(group.id))
-                return redirect(url_for('bp_iwms.groups'))
-            except Exception as e:
-                flash(str(e),'error')
-                return redirect(url_for('bp_iwms.groups'))
-        else:    
-            for key, value in form.errors.items():
-                flash(str(key) + str(value), 'error')
-            return redirect(url_for('bp_iwms.groups'))
 
 
 @bp_iwms.route("/backup")
@@ -249,17 +190,6 @@ def backup():
         flash(str(e),'error')
         return redirect(url_for('bp_iwms.logs'))
 
-
-@bp_iwms.route('/logs')
-@login_required
-def logs():
-    from app.auth.models import User
-    fields = [CoreLog.id,User.fname,CoreLog.date,CoreLog.description,CoreLog.data]
-    models = [CoreLog,User]
-    CONTEXT['mm-active'] = 'logs'
-    return admin_table(*models,fields=fields,template='iwms/iwms_index.html',action="iwms/iwms_system_actions.html",create_modal=False,view_modal=False,kwargs={
-        'index_title':'System Logs and backup','index_headers':['User','Date','Description','Data'],'index_message':'List of items',
-        'active':'system'})
 
 
 @bp_iwms.route('/client_groups')

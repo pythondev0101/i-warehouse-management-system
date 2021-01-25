@@ -6,7 +6,7 @@ from flask import (
 from flask_login import login_required, current_user
 from sqlalchemy.sql.expression import false
 from app import db, CONTEXT
-from app.core.logging import create_log
+from iwms.logging import create_log
 from app.admin import admin_render_template
 from app.admin.routes import admin_table, admin_edit
 from app.auth.permissions import check_create

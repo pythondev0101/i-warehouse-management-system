@@ -4,7 +4,7 @@
 """ APP IMPORTS  """
 from flask.globals import current_app
 from app import db
-from app.core.models import Base
+from app.core.models import Base, CoreLog
 from app.admin.models import Admin
 """--------------END--------------"""
 import enum
@@ -16,7 +16,7 @@ class Group(Base,Admin):
     __amname__ = 'group'
     __amicon__ = 'pe-7s-users'
     __amdescription__ = "Groups"
-    __list_view_url__ = 'bp_iwms.warehouses'
+    __list_view_url__ = 'bp_iwms.groups'
     
     """ COLUMNS """
     name = db.Column(db.String(64),nullable=False)
@@ -27,7 +27,7 @@ class Department(Base,Admin):
     __amname__ = 'department'
     __amicon__ = 'pe-7s-culture'
     __amdescription__ = "Departments"
-    __list_view_url__ = 'bp_iwms.warehouses'
+    __list_view_url__ = 'bp_iwms.departments'
 
 
     """ COLUMNS """
@@ -590,3 +590,14 @@ class ColdStorage(Admin):
     __amdescription__ = 'Cold Storage'
     __amicon__ = 'pe-7s-safe'
     __list_view_url__ = 'bp_iwms.cold_storage'
+
+
+class SystemLog(CoreLog, Admin):
+    __tablename__ = 'iwms_system_log'
+    __amname__ = 'system_log'
+    __amdescription__ = 'System Logs'
+    __amicon__ = 'pe-7s-notebook'
+    __list_view_url__ = 'bp_admin.system_logs'
+
+    user_id = db.Column(db.Integer,db.ForeignKey('auth_user.id',ondelete="SET NULL"),nullable=True)
+    user = db.relationship('User',backref='user_logs')

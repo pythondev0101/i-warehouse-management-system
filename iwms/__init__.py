@@ -12,3 +12,4 @@ from . import models
 from . import functions
 from . import cli
 from . import api
+from . import logging

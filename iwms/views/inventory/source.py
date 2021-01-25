@@ -4,7 +4,7 @@ from flask import (
     )
 from flask_login import login_required, current_user
 from app import db
-from app.core.logging import create_log
+from iwms.logging import create_log
 from app.admin.routes import admin_table, admin_edit
 from app.auth.permissions import check_create
 from iwms import bp_iwms

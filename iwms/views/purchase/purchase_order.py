@@ -9,7 +9,7 @@ from flask_login import login_required, current_user
 from flask_mail import Message
 from app import db, CONTEXT, mail
 from app import admin
-from app.core.logging import create_log
+from iwms.logging import create_log
 from app.admin import admin_render_template
 from app.admin.routes import admin_table, admin_edit
 from app.auth.permissions import check_create
