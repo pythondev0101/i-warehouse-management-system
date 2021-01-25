@@ -1,0 +1,220 @@
+{% extends "admin/admin_base.html" %}
+
+
+{% block default_head %}
+<link href="{{ url_for('bp_admin.static', filename='css/lib/main.css') }}" rel="stylesheet">
+<link href="{{ url_for('bp_admin.static', filename='css/homebest.css') }}" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
+<script src="https://unpkg.com/konva@7.0.3/konva.min.js"></script>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+    background-color: #f0f0f0;
+  }
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div class="app-main__inner">
+  <div id="container"></div>
+</div>
+{% endblock %}
+
+
+{% block inner_footer %}
+<div class="app-footer-left">
+  <button style="margin-right: 10px;" id="btn_mode" type="button" class="btn btn-primary">View Mode</button>
+  <button id="btn_create_new_bin" type="button" class="btn btn-success"><i class="fa fa-plus"></i>&nbsp;Create new
+    bin</button>
+</div>
+{% endblock %}
+
+
+{% block default_scripts %}
+<script type="text/javascript" src="{{ url_for('bp_admin.static', filename='js/lib/main.js') }}"></script>
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+  $(document).ready(function () {
+
+    $.ajaxSetup({
+      beforeSend: function (xhr, settings) {
+        if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+          xhr.setRequestHeader("X-CSRFToken", CSRF_TOKEN);
+        }
+      }
+    });
+
+    var width = 3000;
+    var height = 3000;
+
+    var stage = new Konva.Stage({
+      container: 'container',
+      width: width,
+      height: height,
+    });
+
+    var layer = new Konva.Layer();
+
+    {% for bin in bins %}
+
+    var bin_code = "{{bin.code}}";
+    var bin_x = parseInt("{{bin.x}}");
+    var bin_y = parseInt("{{bin.y}}");
+    var rectangle = new Konva.Group({ x: bin_x, y: bin_y, width: 50, height: 50, draggable: false, id: 'grp_' + bin_code, });
+    var box = new Konva.Rect({ x: bin_x, y: bin_y, width: 50, height: 50, fill: '#ed9e37', stroke: 'black', strokeWidth: 1, name: bin_code });
+    var minibox = new Konva.Rect({ x: bin_x + 38, y: bin_y + 38, width: 10, height: 10, fill: '#ed3737', id: 'mbx_' + bin_code, listening: false });
+    var text = new Konva.Text({
+      x: bin_x, y: bin_y, text: bin_code, fontSize: 18, fontFamily: 'Calibri', name: bin_code + 'text',
+      fill: '#000', width: 50, height: 0, padding: 5, align: 'center'
+    });
+    rectangle.add(box);
+    rectangle.add(minibox);
+    rectangle.add(text);
+
+    layer.add(rectangle);
+
+    {% endfor %}
+
+    layer.on('mouseover', function () {
+      document.body.style.cursor = 'pointer';
+    });
+    layer.on('mouseout', function () {
+      document.body.style.cursor = 'default';
+    });
+
+    layer.on('dblclick', 'Group', function (evt) {
+      var shape = evt.target;
+      var bin_code = shape.name();
+      var minibox = stage.findOne('#mbx_' + bin_code);
+      var group = stage.findOne('#grp_' + bin_code);
+      if (minibox.fill() == "#00D2FF") {
+        minibox.fill("#ed3737");
+        group.draggable(false);
+        
+        $.ajax({
+          url: '/iwms/api/bin-locations/coords/update',
+          type: 'POST',
+          dataType: 'json',
+          data: JSON.stringify({
+            'bin_code': bin_code,
+            'x': shape.absolutePosition().x,
+            'y': shape.absolutePosition().y
+          }),
+          contentType: "application/json; charset=utf-8",
+          success: function (data) {
+            // notify user
+          }
+        });
+        layer.draw();
+      
+      } else {
+      
+        minibox.fill("#00D2FF");
+        group.draggable(true);
+        layer.draw();
+      }
+    });
+
+    layer.on('click', 'Group', function (evt) {
+      var shape = evt.target;
+      var bin_code = shape.name();
+      var minibox = stage.findOne('#mbx_' + bin_code);
+      var group = stage.findOne('#grp_' + bin_code);
+      if ($("#btn_mode").text() == "View Mode") {
+
+        $("#tbl_items tr").each(function () {
+          if ($(this).find("td").eq(0).html()) {
+            $(this).remove();
+          }
+        });
+
+        $.ajax({
+          url: '/iwms/api/bin-locations/' + bin_code + '/products',
+          type: 'GET',
+          contentType: "application/json; charset=utf-8",
+          success: function (data) {
+            $("#item_modal").addClass('show');
+            $("#item_modal").css('display', 'block');
+            var ctr;
+            var tbl_string = "";
+            for (ctr = 0; ctr < data.items.length; ctr++) {
+              tbl_string = tbl_string + `
+                        <tr>
+                          <td>${data.items[ctr].name}</td>
+                          <td>${data.items[ctr].qty_on_hand}</td>
+                          <td>${data.items[ctr].lot_no}</td>
+                          <td>${data.items[ctr].expiry_date}</td>
+                        </tr>
+                      `;
+            }
+            $('#tbl_items tr:last').after(tbl_string);
+
+          }
+        });
+      }
+    });
+
+    stage.add(layer);
+
+    $("#modal_close").click(function () {
+      $("#item_modal").removeClass('show');
+      $("#item_modal").css('display', 'none');
+    });
+
+    $("#btn_create_new_bin").click(function () {
+      var bin_code = prompt("Bin code");
+      if (bin_code) {
+        var rectangle = new Konva.Group({ x: 0, y: 0, width: 50, height: 50, draggable: true, id: 'grp_' + bin_code, });
+        var box = new Konva.Rect({ x: 0, y: 0, width: 50, height: 50, fill: '#ed9e37', stroke: 'black', strokeWidth: 1, name: bin_code });
+        var minibox = new Konva.Rect({ x: 0 + 38, y: 0 + 38, width: 10, height: 10, fill: '#00D2FF', id: 'mbx_' + bin_code, listening: false });
+        var text = new Konva.Text({
+          x: 0, y: 0, text: bin_code, fontSize: 18, fontFamily: 'Calibri', name: bin_code + 'text',
+          fill: '#000', width: 50, height: 0, padding: 5, align: 'center'
+        });
+        rectangle.add(box);
+        rectangle.add(minibox);
+        rectangle.add(text);
+
+        $.ajax({
+          url: '/iwms/api/bin-locations/create',
+          type: 'POST',
+          dataType: 'json',
+          data: JSON.stringify({ 'bin_code': bin_code }),
+          contentType: "application/json; charset=utf-8",
+          success: function (data) {
+            if (data.result) {
+              layer.add(rectangle);
+              layer.draw();
+            }
+          }
+        });
+      }
+    });
+
+    $("#btn_mode").toggle(
+      function () {
+        $(this).text("Drag Mode");
+      }, function () {
+        $(this).text("View Mode");
+      }
+    );
+
+  });
+
+  (function () {
+    var fixed_footer = document.getElementById('chkbox_fixed_footer');
+    setTimeout(function () {
+      fixed_footer.click();
+    }, 100);
+  })();
+
+</script>
+{% endblock %}

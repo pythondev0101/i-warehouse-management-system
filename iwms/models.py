@@ -209,7 +209,7 @@ class UnitOfMeasure(Base,Admin):
     __amname__ = 'unit_of_measure'
     __amdescription__ = 'Unit Of Measure'
     __amicon__ = 'pe-7s-vector'
-    __list_view_url__ = 'bp_iwms.warehouses'
+    __list_view_url__ = 'bp_iwms.unit_of_measurements'
 
     """ COLUMNS """
     code = db.Column(db.String(64),nullable=False,unique=True)
@@ -494,7 +494,7 @@ class SalesOrder(Base,Admin):
     __amname__ = 'sales_order'
     __amdescription__ = 'Sales Order'
     __amicon__ = 'pe-7s-cart'
-    __list_view_url__ = 'bp_iwms.warehouses'
+    __list_view_url__ = 'bp_iwms.sales_orders'
 
     """ COLUMNS """
     number = db.Column(db.String(255),nullable=False)
@@ -542,7 +542,7 @@ class Picking(Base,Admin):
     __amname__ = 'picking'
     __amdescription__ = 'Picking'
     __amicon__ = 'pe-7s-upload'
-    __list_view_url__ = 'bp_iwms.warehouses'
+    __list_view_url__ = 'bp_iwms.pickings'
 
     """ COLUMNS """
     number = db.Column(db.String(255),nullable=False)

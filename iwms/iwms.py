@@ -12,7 +12,7 @@ from .models import (
 class IwmsModule(CoreModule):
     module_name = 'iwms'
     module_icon = 'fa-cubes'
-    module_link = 'bp_iwms.warehouses'
+    module_link = 'bp_iwms.warehouse_bin_location'
     module_short_description = 'Warehouse Management'
     module_long_description = "Warehouse Management system"
     models = [

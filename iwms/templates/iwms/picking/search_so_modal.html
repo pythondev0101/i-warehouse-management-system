@@ -22,7 +22,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for so in sales_orders %}
+                                        {% for so in data['sales_orders'] %}
                                         <tr class="item" id="{{ so.id }}">
                                             <td style="display:none;">{{ so.id }}</td>
                                             <td>{{so.number}}</td>

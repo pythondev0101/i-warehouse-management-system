@@ -113,50 +113,6 @@ def _get_SO_status():
         return jsonify({'editable':editable})
 
 
-@bp_iwms.route('/_update_bin_coord', methods=['POST'])
-def _update_bin_coord():
-    if request.method == 'POST':
-        _bin_code = request.json['bin_code']
-        _x,_y = request.json['x'], request.json['y']
-        print(_x,_y);
-        bin = BinLocation.query.filter_by(code=_bin_code).first()
-        bin.x = _x / 2
-        bin.y = _y / 2
-        db.session.commit()
-        return jsonify({'Result':True})
-
-@bp_iwms.route('/_get_bin_items',methods=['POST'])
-def _get_bin_items():
-    if request.method == 'POST':
-        _bin_code = request.json['bin_code']
-        bin = BinLocation.query.filter_by(code=_bin_code).first()
-        items = []
-        for x in bin.item_bin_locations:
-            items.append({
-                'name': x.inventory_item.stock_item.name,
-                'qty_on_hand': x.qty_on_hand,
-                'lot_no': x.lot_no,
-                'expiry_date': x.expiry_date,
-            })
-        return jsonify(res=items)
-
-@bp_iwms.route('/_create_bin',methods=['POST'])
-def _create_bin():
-    _bin_code = request.json['bin_code']
-    bin = BinLocation()
-    bin.code = _bin_code
-    bin.x = 0
-    bin.y = 0
-    db.session.add(bin)
-    db.session.commit()
-    return jsonify({"Result":True})
-
-
-
-
-
-
-
 @bp_iwms.route('/_get_so_line',methods=['POST'])
 def _get_so_line():
     if request.method == "POST":

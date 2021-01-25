@@ -1,4 +1,4 @@
-{% extends "iwms/iwms_base_scripts.html" %}
+{% extends "admin/admin_base.html" %}
 
 {% block content %}
 <div class="app-main__inner">
@@ -9,7 +9,7 @@
                     <i class="text-success pe-7s-upload">
                     </i>
                 </div>
-                <div>{{pck_generated_number}}
+                <div>{{data['pck_generated_number']}}
                     <div class="page-title-subheading"><div class="mb-2 mr-2 badge badge-pill badge-primary">LOGGED</div>
                     </div>
                 </div>
@@ -17,7 +17,7 @@
         </div>
     </div>
 
-    <form action="{{ url_for('bp_iwms.picking_create') }}" id="edit_form" class="needs-validation" method="POST" novalidate>
+    <form action="{{ url_for('bp_iwms.create_picking') }}" id="edit_form" class="needs-validation" method="POST" novalidate>
     {{ form.csrf_token }}
             <div class="main-card mb-3 card">
                 <div class="card-body">
@@ -37,7 +37,7 @@
                                     <label for="warehouse_id" class="">Warehouse</label>
                                     <select name="warehouse_id" id="warehouse_id" class="form-control" required>
                                         <option value="">Choose...</option>
-                                        {% for warehouse in warehouses %}
+                                        {% for warehouse in data['warehouses'] %}
                                         <option value="{{warehouse.id}}">
                                             {{ warehouse.name }}
                                         </option>
@@ -112,5 +112,13 @@
             })();
         </script>
     </form>
+</div>
+{% endblock %}
+
+
+{% block inner_footer %}
+<div class="app-footer-left">
+    <button form="edit_form" type="submit" class="btn btn-primary" style="margin-right: 10px;">Save</button>
+    <button type="button" class="btn btn-secondary" onclick="history.back(-1)">Cancel</button>
 </div>
 {% endblock %}

@@ -1,4 +1,5 @@
-{% extends "iwms/iwms_index.html" %}
+{% extends "admin/admin_table.html" %}
+
 {% block content %}
 <div class="app-main__inner">
     <div class="app-page-title">
@@ -8,9 +9,9 @@
                     <i class="{{ rendered_model.__amicon__ }} icon-gradient bg-happy-itmeo"></i>
                 </div>
                 <div>
-                    {{ index_title }}
+                    {{ heading }}
                     <div class="page-title-subheading">
-                        {{ index_message }}
+                        {{ sub_heading }}
                     </div>
                 </div>
             </div>

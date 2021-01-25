@@ -312,6 +312,8 @@ class UnitOfMeasureEditForm(AdminEditForm):
             [self.code,self.description],[self.active]
         ]
 
+    edit_title = "Edit unit of measurement"
+
 
 class WarehouseForm(AdminIndexForm):
     index_headers = ['Code','Name','created by','created at','updated by','updated at']

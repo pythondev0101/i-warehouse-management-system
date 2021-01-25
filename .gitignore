@@ -66,4 +66,3 @@ target/
 migrations/
 instance/
 .env
-iwms/

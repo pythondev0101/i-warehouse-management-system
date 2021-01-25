@@ -1,4 +1,4 @@
-{% extends "iwms/iwms_base_scripts.html" %}
+{% extends "admin/admin_base.html" %}
 
 {% block content %}
 <div class="app-main__inner">
@@ -9,7 +9,7 @@
                     <i class="pe-7s-cart text-success">
                     </i>
                 </div>
-                <div>{{ so_generated_number }}
+                <div>{{ data['so_generated_number'] }}
                     <div class="page-title-subheading"><div class="mb-2 mr-2 badge badge-pill badge-primary">LOGGED</div>
                     </div>
                 </div>
@@ -23,7 +23,7 @@
             </a>
         </li>
     </ul>
-    <form action="{{ url_for('bp_iwms.sales_order_create') }}" id="edit_form" class="needs-validation" method="POST" novalidate>
+    <form action="{{ url_for('bp_iwms.create_sales_order') }}" id="edit_form" class="needs-validation" method="POST" novalidate>
     {{ form.csrf_token }}
     <div class="tab-content">
         <div class="tab-pane tabs-animation fade active show" id="tab-content-0" role="tabpanel">
@@ -141,10 +141,6 @@
                 </div>
             </div>
         </div>
-        <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
-        <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
-        <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
-       
         <script>
             // Example starter JavaScript for disabling form submissions if there are invalid fields
             (function() {

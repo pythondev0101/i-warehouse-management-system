@@ -9,7 +9,7 @@ from .purchase import (
     SupplierForm, SupplierEditForm, PurchaseOrderCreateForm, PurchaseOrderViewForm
 )
 from .sales import (
-    ShipViaForm, ShipViaEditForm, ClientForm, ClientEditForm, TermForm, TermEditForm
+    ShipViaForm, ShipViaEditForm, ClientForm, ClientEditForm, TermForm, TermEditForm, SalesOrderViewForm, SalesOrderCreateForm
 )
 from .system import (
     DepartmentForm, DepartmentEditForm, EmailForm, EmailEditForm, GroupForm, GroupEditForm
