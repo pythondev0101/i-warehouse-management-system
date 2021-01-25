@@ -1,8 +1,9 @@
 from sqlalchemy import func
 from flask import request, jsonify
+from flask_cors import cross_origin
 from iwms import bp_iwms
 from iwms.models import StockItem, PurchaseOrder, UnitOfMeasure, Warehouse, BinLocation,\
-    StockReceipt, InventoryItem, ItemBinLocations
+    StockReceipt, InventoryItem, ItemBinLocations, SalesOrder
 from iwms.functions import check_fast_slow
 
 
@@ -42,7 +43,7 @@ def get_supplier_products():
 @bp_iwms.route('/api/get-product-uom-line',methods=['GET'])
 def get_product_uom_line():
 
-    stock_item_id = request.args.get('stock_item_id')
+    stock_item_id = int(request.args.get('stock_item_id'))
 
     # Pag 0 means kukunin nya lahat ang uom
     if stock_item_id == 0:
@@ -178,3 +179,83 @@ def get_sr_products(srID):
     response.status_code = 200
 
     return response
+
+
+@bp_iwms.route('/api/sales-orders/<int:oid>/products',methods=['GET'])
+def get_sales_orders_products(oid):
+    so = SalesOrder.query.get_or_404(oid)
+    so_line = []
+
+    for line in so.product_line:
+        if line:
+            _expiry_date = ''
+            if line.item_bin_location.expiry_date is not None:
+                _expiry_date = line.item_bin_location.expiry_date.strftime("%Y-%m-%d")
+
+            so_line.append({
+                'id':line.item_bin_location_id,'name':line.inventory_item.stock_item.name,
+                'uom':line.uom.code,'number':line.inventory_item.stock_item.number,
+                'lot_no':line.item_bin_location.lot_no,'expiry_date': _expiry_date,
+                'qty':line.qty,'bin_location': line.item_bin_location.bin_location.code,
+                'issued_qty': line.issued_qty
+                })
+
+    res = jsonify(items=so_line)
+    res.status_code = 200
+    return res
+
+
+@bp_iwms.route('/api/inventory-items/<int:oid>',methods=["GET"])
+@cross_origin()
+def get_ii_view_modal_data(oid):
+    ii = InventoryItem.query.get_or_404(oid)
+    res = {}
+    res['name'] = ii.stock_item.name
+    res['number'] = ii.stock_item.number
+    res['price'] = str(ii.default_price)
+    res['cost'] = str(ii.default_cost)
+    res['stock_item_type_id'] = ii.stock_item_type_id
+    res['category_id'] = ii.category_id
+
+    resp = jsonify(result=res)
+    resp.headers.add('Access-Control-Allow-Origin', '*')
+    resp.status_code = 200
+    
+    return resp
+
+
+@bp_iwms.route('/_get_SO_status',methods=['POST'])
+def _get_SO_status():
+    if request.method == 'POST':
+        _id = request.json['id']
+        _so = SalesOrder.query.get(_id)
+        editable = False
+        if _so.status == "LOGGED":
+            editable = True
+        return jsonify({'editable':editable})
+
+
+@bp_iwms.route('/_get_PO_status',methods=['POST'])
+def _get_PO_status():
+    if request.method == 'POST':
+        _id = request.json['id']
+        _po = PurchaseOrder.query.get(_id)
+        editable = False
+        if _po.status == "LOGGED":
+            editable = True
+        return jsonify({'editable':editable})
+
+
+@bp_iwms.route('/_barcode_check', methods=['POST'])
+def _barcode_check():
+    if request.method == 'POST':
+        barcode = request.json['barcode']
+        check = StockItem.query.filter(StockItem.barcode == barcode).first()
+        if check:
+            resp = jsonify(result=0)
+            resp.status_code = 200
+            return resp
+        else:
+            resp = jsonify(result=1)
+            resp.status_code = 200
+            return resp

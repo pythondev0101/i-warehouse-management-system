@@ -63,10 +63,8 @@ $(document).ready(function(){
         $("#remarks").val(remarks);
 
         $.ajax({
-            url: '/iwms/_get_so_line',
-            type: 'POST',
-            dataType: 'json',
-            data: JSON.stringify({'so_id':so_id}),
+            url: '/iwms/api/sales-orders/' + so_id + "/products",
+            type: 'GET',
             contentType: "application/json; charset=utf-8",
             success: function(data){
                 for (i=0; i < data.items.length; ++i){
@@ -105,7 +103,7 @@ $(document).ready(function(){
         var bin_location = $("#bin_location").val();
         var quantity = $("#quantity").val();
         var timestamp = + new Date();
-        var picker = "{{current_user.username}}";
+        var picker = "";
 
             var row = $("#tbl_so_line_modal tr.selected");
             $('#tbl_pwy_item_line tr:last').after(

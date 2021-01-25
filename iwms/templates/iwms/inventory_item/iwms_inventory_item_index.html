@@ -36,7 +36,7 @@
                         </thead>
                         <tbody>
 
-                        {% for model in models %}
+                        {% for model in model_data %}
                         {% if view_modal %}
                         <tr class='item row_object' id="{{ model[0] }}"  data-toggle="modal" data-target="#viewModal">
                             <param id="param_{{ model[0] }}" name="param_{{ model[0] }}" {% if edit_url %} value="{{ url_for(edit_url,oid=model[0]) }}" {% endif %}>
@@ -159,10 +159,8 @@
                         }
                     });
                     $.ajax({
-                            url: "/iwms/_get_ii_view_modal_data",
-                            type: "POST",
-                            dataType: "json",
-                            data: JSON.stringify({'id':field_id}),
+                            url: "/iwms/api/inventory-items/" + field_id,
+                            type: "GET",
                             contentType: "application/json; charset=utf-8",
                             success: function(data) {
                                 if (data){

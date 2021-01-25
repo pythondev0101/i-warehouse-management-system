@@ -1,6 +1,6 @@
 from datetime import datetime
 from flask import (
-    render_template, request, redirect, flash, url_for
+    render_template, request, redirect, flash, url_for, jsonify 
     )
 from flask_login import login_required, current_user
 from app import db, CONTEXT
@@ -134,3 +134,41 @@ def create_stock_receipt():
         flash(str(e),'error')
     
     return redirect(url_for('bp_iwms.stock_receipts'))
+
+
+
+@bp_iwms.route("/_create_label",methods=['POST'])
+def _create_label():
+    import os
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    basedir = basedir + "/pallet_tag/barcodetxtfile.txt"
+
+    _lot_no = request.json['lot_no']
+    _expiry_date = request.json['expiry_date']
+    _label = request.json['label']
+    _quantity = request.json['quantity']
+    _sr_number = request.json['sr_number']
+    _po_number = request.json['po_number']
+    _stock_id = request.json['stock_id']
+    _supplier = request.json['supplier']
+
+    stock_item = StockItem.query.get_or_404(_stock_id)
+    _description = stock_item.description
+    # SR ,PO ,LOTNUM,EXPIRY DAT,Description ,QTY,Supplier ,SR ,number_of_label
+
+    with open(basedir, 'w+') as the_file:
+        txt = "{},{},{},{},{},{},{},{},{}".format(_sr_number,_po_number,\
+            _lot_no,_expiry_date,_description,_quantity,_supplier,_sr_number,_label)
+        the_file.write(txt)
+    
+    """ Call .bat to generate pallet tag """
+    import subprocess
+
+    filepath= r"D:\iWMS\app\iwms\pallet_tag\printPalletTag.bat"
+    p = subprocess.Popen(filepath, shell=True, stdout = subprocess.PIPE)
+
+    stdout, stderr = p.communicate()
+    print(p.returncode) # is 0 if success
+
+    res = jsonify({'result':True})
+    return res

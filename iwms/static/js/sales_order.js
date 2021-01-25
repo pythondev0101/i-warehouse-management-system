@@ -41,11 +41,9 @@ $(document).ready(function(){
                 var item_price = $(this).find("td").eq(7).html();
                 var item_uom = `<select name="uom_${item_id}" style='width':100%;'>`;
                     $.ajax({
-                        url: "/iwms/_get_uom_line",
-                        type: 'POST',
+                        url: "/iwms/api/get-product-uom-line?stock_item_id=" + 0,
+                        type: 'GET',
                         async: false,
-                        dataType: 'json',
-                        data: JSON.stringify({'stock_item_id':0}),
                         contentType: "application/json; charset=utf-8",
                         success: function(data){
                             for (i=0; i < data.uom_lines.length; ++i){
@@ -53,6 +51,7 @@ $(document).ready(function(){
                             }
                         }
                     });
+
                 var _trim_item_available_qty = $.trim(item_available_qty);
                 $('#tbl_so_line tr:last').after(
                     `<tr>

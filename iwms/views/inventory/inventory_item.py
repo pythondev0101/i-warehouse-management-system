@@ -1,8 +1,9 @@
 from datetime import datetime
 from sqlalchemy import func
 from flask import (
-    render_template, request, redirect, flash, url_for
+    render_template, request, redirect, flash, url_for, jsonify
     )
+from flask_cors import cross_origin
 from flask_login import login_required, current_user
 from sqlalchemy.sql.expression import false
 from app import db, CONTEXT

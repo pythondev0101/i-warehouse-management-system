@@ -571,10 +571,11 @@ class PickingItemLine(db.Model):
 
 
 class StockTransfer(Admin):
+    __tablename__ = 'inventory_item'
     __amname__ = 'stock_transfer'
     __amdescription__ = 'Stock Transfer'
     __amicon__ = 'pe-7s-upload'
-    __list_view_url__ = 'bp_iwms.warehouses'
+    __list_view_url__ = 'bp_iwms.stock_transfers'
 
 
 

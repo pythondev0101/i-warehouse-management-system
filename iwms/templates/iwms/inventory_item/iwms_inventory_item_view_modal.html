@@ -12,14 +12,7 @@
             <div class="modal-body">
                 <div class="main-card mb-3 card">
                     <div class="card-body">
-                        <!-- <div class="form-row">
-                            <div class="col-md-6 mb-3">
-                                <label for="view_name">Name</label>
-                                <input style="font-weight: bold;" disabled type="text" class="form-control" id="view_name" name="view_name"
-                                    value="">
-                            </div>
-                        </div> -->
-                        {% for row in modal['fields'] %}
+                        {% for row in create_fields %}
                         {% set row_count = loop %}
                         <div class="form-row">
                             {% for field in row %}
